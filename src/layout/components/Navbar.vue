@@ -37,9 +37,9 @@
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">登出</span>
           </el-dropdown-item>
-          <router-link to="/">
-            <el-dropdown-item>修改密码</el-dropdown-item>
-          </router-link>
+          <el-dropdown-item divided @click.native="modifyPass">
+            <span style="display:block;">修改密码</span>
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -76,7 +76,12 @@ export default {
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     },
     modifyPass() {
-      this.$router.push(`/password`)
+      this.$router.push({
+        name: 'Profile',
+        params: {
+          activeTab: 'account'
+        }
+      })
     }
   }
 }

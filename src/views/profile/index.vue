@@ -16,7 +16,7 @@
               <el-tab-pane label="Timeline" name="timeline">
                 <timeline />
               </el-tab-pane>
-              <el-tab-pane label="Account" name="account">
+              <el-tab-pane label="账号" name="account">
                 <account :user="user" />
               </el-tab-pane>
             </el-tabs>
@@ -34,7 +34,6 @@ import UserCard from './components/UserCard'
 import Activity from './components/Activity'
 import Timeline from './components/Timeline'
 import Account from './components/Account'
-
 export default {
   name: 'Profile',
   components: { UserCard, Activity, Timeline, Account },
@@ -54,14 +53,22 @@ export default {
   },
   created() {
     this.getUser()
+    this.getActiveTab()
   },
   methods: {
     getUser() {
       this.user = {
         name: this.name,
         role: this.roles.join(' | '),
+        email: 'admin@test.com',
         avatar: this.avatar,
         phone: this.phone
+      }
+    },
+    getActiveTab() {
+      console.log('pp:' + this.$route.params.activeTab)
+      if (this.$route.params.activeTab) {
+        this.activeTab = this.$route.params.activeTab
       }
     }
   }

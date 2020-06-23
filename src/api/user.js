@@ -21,3 +21,11 @@ export function logout() {
     method: 'get'
   })
 }
+
+export function changePassword(data) {
+  return request({
+    url: '/v1/api/password',
+    method: 'post',
+    data
+  })
+}
