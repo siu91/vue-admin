@@ -1,14 +1,14 @@
 <template>
   <el-card style="margin-bottom:20px;">
     <div slot="header" class="clearfix">
-      <span>About me</span>
+      <span>个人信息</span>
     </div>
 
     <div class="user-profile">
       <div class="box-center">
         <pan-thumb :image="user.avatar" :height="'100px'" :width="'100px'" :hoverable="false">
           <div>Hello</div>
-          {{ user.role }}
+          {{ user.name }}
         </pan-thumb>
       </div>
       <div class="box-center">
@@ -19,15 +19,16 @@
 
     <div class="user-bio">
       <div class="user-education user-bio-section">
-        <div class="user-bio-section-header"><svg-icon icon-class="education" /><span>Education</span></div>
+        <div class="user-bio-section-header">
+          <svg-icon icon-class="education" />
+          <span>联系电话</span>
+        </div>
         <div class="user-bio-section-body">
-          <div class="text-muted">
-            JS in Computer Science from the University of Technology
-          </div>
+          <div class="text-muted">{{ user.phone }}</div>
         </div>
       </div>
 
-      <div class="user-skills user-bio-section">
+      <!--   <div class="user-skills user-bio-section">
         <div class="user-bio-section-header"><svg-icon icon-class="skill" /><span>Skills</span></div>
         <div class="user-bio-section-body">
           <div class="progress-item">
@@ -47,7 +48,7 @@
             <el-progress :percentage="100" status="success" />
           </div>
         </div>
-      </div>
+      </div>-->
     </div>
   </el-card>
 </template>
@@ -65,7 +66,8 @@ export default {
           name: '',
           email: '',
           avatar: '',
-          role: ''
+          role: '',
+          phone: '12222222'
         }
       }
     }
