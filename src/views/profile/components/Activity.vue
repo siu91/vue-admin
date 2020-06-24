@@ -13,48 +13,6 @@
         tools to help create filler text for everyone from bacon lovers
         to Charlie Sheen fans.
       </p>
-      <ul class="list-inline">
-        <li>
-          <span class="link-black text-sm">
-            <i class="el-icon-share" />
-            Share
-          </span>
-        </li>
-        <li>
-          <span class="link-black text-sm">
-            <svg-icon icon-class="like" />
-            Like
-          </span>
-        </li>
-      </ul>
-    </div>
-    <div class="post">
-      <div class="user-block">
-        <img class="img-circle" :src="'https://wpimg.wallstcn.com/9e2a5d0a-bd5b-457f-ac8e-86554616c87b.jpg'+avatarPrefix">
-        <span class="username text-muted">Captain American</span>
-        <span class="description">Sent you a message - yesterday</span>
-      </div>
-      <p>
-        Lorem ipsum represents a long-held tradition for designers,
-        typographers and the like. Some people hate it and argue for
-        its demise, but others ignore the hate as they create awesome
-        tools to help create filler text for everyone from bacon lovers
-        to Charlie Sheen fans.
-      </p>
-      <ul class="list-inline">
-        <li>
-          <span class="link-black text-sm">
-            <i class="el-icon-share" />
-            Share
-          </span>
-        </li>
-        <li>
-          <span class="link-black text-sm">
-            <svg-icon icon-class="like" />
-            Like
-          </span>
-        </li>
-      </ul>
     </div>
     <div class="post">
       <div class="user-block">
