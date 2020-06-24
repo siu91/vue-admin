@@ -1,10 +1,14 @@
 <template>
   <el-form>
     <el-form-item label="原密码">
-      <el-input v-model="updatePass.password" />
+      <el-col :span="8">
+        <el-input v-model="updatePass.password" type="password" maxlength="18" />
+      </el-col>
     </el-form-item>
     <el-form-item label="新密码">
-      <el-input v-model="updatePass.newPassword" />
+      <el-col :span="8">
+        <el-input v-model="updatePass.newPassword" type="password" maxlength="18" />
+      </el-col>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="changePass">修改密码</el-button>
@@ -48,7 +52,6 @@ export default {
             type: 'success',
             duration: 5 * 1000
           })
-          // this.$store.dispatch('user/logout')
           this.$router.push(`/login?redirect=${this.$route.fullPath}`)
         }).catch(() => { this.loading = false })
       } else {
