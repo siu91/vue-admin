@@ -2,16 +2,13 @@
   <div class="user-activity">
     <div class="post">
       <div class="user-block">
-        <img class="img-circle" :src="'https://wpimg.wallstcn.com/57ed425a-c71e-4201-9428-68760c0537c4.jpg'+avatarPrefix">
-        <span class="username text-muted">Iron Man</span>
-        <span class="description">Shared publicly - 7:30 PM today</span>
+        <img class="img-circle" :src="user.avatar + avatarPrefix">
+        <span class="username text-muted">{{ user.name }}</span>
+        <span class="description">{{ user.aDate }}</span>
       </div>
       <p>
-        Lorem ipsum represents a long-held tradition for designers,
-        typographers and the like. Some people hate it and argue for
-        its demise, but others ignore the hate as they create awesome
-        tools to help create filler text for everyone from bacon lovers
-        to Charlie Sheen fans.
+        {{ user.action }}
+        {{ user.ptid }} | {{ user.tid }}
       </p>
     </div>
     <div class="post">
@@ -43,8 +40,30 @@ const avatarPrefix = '?imageView2/1/w/80/h/80'
 const carouselPrefix = '?imageView2/2/h/440'
 
 export default {
+/*   props: {
+    user: {
+      type: Object,
+      default: () => {
+        return {
+          name: '',
+          email: '',
+          avatar: '',
+          role: '',
+          phone: '12222222'
+        }
+      }
+    }
+  }, */
   data() {
     return {
+      user: {
+        avatar: 'http://thirdwx.qlogo.cn/mmopen/vi_32/E7XLbDS0gRJibYGpzxcEwXibyTwQAAHX9Koia7oln1821c8Djkibtpf6O20J3nacpnb0pg1UmtpdfDznHYBZvL78kw/132',
+        name: 'James',
+        aDate: new Date(),
+        action: '登出',
+        ptid: '0',
+        tid: 'h4gdy3bf3'
+      },
       carouselImages: [
         'https://wpimg.wallstcn.com/9679ffb0-9e0b-4451-9916-e21992218054.jpg',
         'https://wpimg.wallstcn.com/bcce3734-0837-4b9f-9261-351ef384f75a.jpg',

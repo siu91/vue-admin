@@ -29,3 +29,11 @@ export function changePassword(data) {
     data
   })
 }
+
+export function usePageList(data) {
+  return request({
+    url: '/v1/api/users',
+    method: 'post',
+    data
+  })
+}
