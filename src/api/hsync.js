@@ -7,3 +7,26 @@ export function connectProject(data) {
     data
   })
 }
+
+export function syncList(data) {
+  return request({
+    url: '/v1/syncs',
+    method: 'get',
+    data
+  })
+}
+
+export function deleteSync(id) {
+  return request({
+    url: '/v1/syncs/' + id,
+    method: 'delete'
+  })
+}
+
+export function updateSync(data) {
+  return request({
+    url: '/v1/syncs/' + data.id,
+    method: 'put',
+    data
+  })
+}

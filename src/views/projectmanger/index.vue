@@ -46,77 +46,51 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="用户名" width="150px" align="center">
+      <el-table-column label="关联信息" width="250px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.userName }}</span>
+          <span>{{ row.description }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="禅道/Gitlab用户名" width="150px" align="center">
+      <el-table-column label="禅道产品ID" width="100px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.realName }}</span>
+          <span>{{ row.ztProductId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="类型" width="110px" align="center">
+      <el-table-column label="禅道项目ID" width="100px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.userType == 1 ? '管理员':'普通用户' }}</span>
+          <span>{{ row.ztProjectId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" class-name="status-col" width="100">
+      <el-table-column label="Gitlab项目ID" width="150px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.activeStatus == 1 ? '正常':row.activeStatus == -1 ? '黑名单' : '未激活' }}</span>
+          <span>{{ row.glProjectId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="注册时间" width="230px" align="center">
+      <el-table-column label="是否同步" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.updateTime }}</span>
+          <span>{{ row.sync == 1 ? '是':'否' }}</span>
         </template>
       </el-table-column>
-      <!--   <el-table-column label="Title" min-width="150px">
+      <el-table-column label="同步时间" width="230px" align="center">
         <template slot-scope="{row}">
-          <span class="link-type" @click="handleUpdate(row)">{{ row.title }}</span>
-          <el-tag>{{ row.userName | typeFilter }}</el-tag>
-        </template>
-      </el-table-column> -->
-      <el-table-column label="电话" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.phone }}</span>
+          <span>{{ row.syncTime }}</span>
         </template>
       </el-table-column>
-      <!--  <el-table-column v-if="showReviewer" label="Reviewer" width="110px" align="center">
+      <el-table-column label="创建时间" width="230px" align="center">
         <template slot-scope="{row}">
-          <span style="color:red;">{{ row.reviewer }}</span>
+          <span>{{ row.createTime }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Imp" width="80px">
-        <template slot-scope="{row}">
-          <svg-icon v-for="n in + row.importance" :key="n" icon-class="star" class="meta-item__icon" />
-        </template>
-      </el-table-column>
-      <el-table-column label="Readings" align="center" width="95">
-        <template slot-scope="{row}">
-          <span v-if="row.pageviews" class="link-type" @click="handleFetchPv(row.pageviews)">{{ row.pageviews }}</span>
-          <span v-else>0</span>
-        </template>
-      </el-table-column> -->
       <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
+          <el-button v-if="row.sync!=1" size="mini" type="success" @click="handleModifySync(row,1)">
+            开启同步
           </el-button>
-          <!--   <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
-            Publish
+          <el-button v-if="row.sync==1" size="mini" type="danger" @click="handleModifySync(row,0)">
+            关闭同步
           </el-button>
-          <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
-            Draft
-          </el-button> -->
-          <el-button v-if="row.activeStatus==1 " size="mini" type="danger" @click="handleDelete(row,$index)">
-            拉黑
-          </el-button>
-          <el-button v-if="row.activeStatus==-1 " size="mini" type="danger" @click="handleDelete(row,$index)">
-            移除黑名单
-          </el-button>
-          <el-button v-if="row.activeStatus==0 " size="mini" type="danger" @click="handleDelete(row,$index)">
-            激活
+          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
+            删除
           </el-button>
         </template>
       </el-table-column>
@@ -190,10 +164,9 @@
 
 <script>
 import { createArticle, updateArticle } from '@/api/article'
-import { usePageList } from '@/api/user'
 import { ztProductList, ztProductProjectList } from '@/api/zentao'
 import { gitlabProjectList } from '@/api/gitlab'
-import { connectProject } from '@/api/hsync'
+import { connectProject, syncList, deleteSync, updateSync } from '@/api/hsync'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -368,7 +341,7 @@ export default {
       // const { limit, page, terms } = this.listQuery
       // { limit: limit, page: page, terms: terms }
       const q = Object.assign({}, this.listQuery)
-      usePageList(q).then(response => {
+      syncList(q).then(response => {
         this.list = response.data.items
         this.total = response.data.total
         console.log('ss:' + this.total)
@@ -388,6 +361,7 @@ export default {
       // { limit: limit, page: page, terms: terms }
       const q = Object.assign({}, this.projectConnect)
       connectProject(q).then(response => {
+        this.getList()
         this.$message({
           message: '项目关联成功',
           type: 'success',
@@ -395,12 +369,15 @@ export default {
         })
       })
     },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作Success',
-        type: 'success'
+    handleModifySync(row, status) {
+      row.sync = status
+      updateSync(row).then(() => {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        row.sync = status
       })
-      row.status = status
     },
     sortChange(data) {
       const { prop, order } = data
@@ -484,13 +461,16 @@ export default {
       })
     },
     handleDelete(row, index) {
-      this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
-        duration: 2000
+      console.log('删除同步：' + row.id)
+      deleteSync(row.id).then(() => {
+        this.$notify({
+          title: 'Success',
+          message: '删除成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.list.splice(index, 1)
       })
-      this.list.splice(index, 1)
     },
     formatJson(filterVal) {
       return this.list.map(v => filterVal.map(j => {
