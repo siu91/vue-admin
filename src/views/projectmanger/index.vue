@@ -1,10 +1,6 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <!--  <el-input v-model="listQuery.terms.userName" placeholder="用户名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" /> -->
-      <!-- <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
-      </el-select -->
       <el-select v-model="projectConnect.ztProductId" placeholder="禅道产品" clearable class="filter-item" style="width: 230px" @change="selectProduct">
         <el-option v-for="item in ztProductList" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
@@ -14,21 +10,9 @@
       <el-select v-model="projectConnect.glProjectId" placeholder="Gitlab项目" clearable class="filter-item" style="width: 200px">
         <el-option v-for="item in gitlabProjectList" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
-      <!-- <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
-      </el-select> -->
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-edit" @click="handleConnenctProject">
         关联
       </el-button>
-      <!--  <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        添加
-      </el-button> -->
-      <!--  <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
-        导出
-      </el-button> -->
-      <!-- <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
-        reviewer
-      </el-checkbox> -->
     </div>
 
     <el-table
@@ -97,68 +81,6 @@
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="类型" prop="userType">
-          <el-select v-model="temp.userType" class="filter-item" placeholder="请选择">
-            <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="用户名" prop="userName">
-          <el-input v-model="temp.userName" :disabled="inputDisable" />
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="temp.password" type="password" :disabled="inputDisable" />
-        </el-form-item>
-        <el-form-item label="内部系统用户名" prop="realName">
-          <el-input v-model="temp.realName" />
-        </el-form-item>
-        <el-form-item label="手机号" prop="phone">
-          <el-input v-model="temp.phone" />
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="temp.activeStatus" placeholder="请选择" clearable class="filter-item" style="width: 130px">
-            <el-option v-for="item in userActiveStatusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-          </el-select>
-        </el-form-item>
-        <!-- <el-form-item label="Date" prop="timestamp">
-          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
-        </el-form-item>
-        <el-form-item label="Title" prop="title">
-          <el-input v-model="temp.title" />
-        </el-form-item>
-        <el-form-item label="Status">
-          <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="Imp">
-          <el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3" style="margin-top:8px;" />
-        </el-form-item>
-        <el-form-item label="Remark">
-          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
-        </el-form-item> -->
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          取消
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          确定
-        </el-button>
-      </div>
-    </el-dialog>
-
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 

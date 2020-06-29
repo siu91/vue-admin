@@ -37,3 +37,19 @@ export function usePageList(data) {
     data
   })
 }
+
+export function updateUser(data) {
+  return request({
+    url: '/v1/api/users/' + data.id,
+    method: 'put',
+    data
+  })
+}
+
+export function register(data) {
+  return request({
+    url: '/v1/api/register',
+    method: 'post',
+    data
+  })
+}

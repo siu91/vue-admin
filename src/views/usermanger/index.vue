@@ -93,7 +93,7 @@
         </template>
       </el-table-column> -->
       <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
+        <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
@@ -103,13 +103,13 @@
           <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
             Draft
           </el-button> -->
-          <el-button v-if="row.activeStatus==1 " size="mini" type="danger" @click="handleDelete(row,$index)">
+          <el-button v-if="row.activeStatus==1 " size="mini" type="danger" @click="handleModifyStatus(row,-1)">
             拉黑
           </el-button>
-          <el-button v-if="row.activeStatus==-1 " size="mini" type="danger" @click="handleDelete(row,$index)">
-            移除黑名单
-          </el-button>
-          <el-button v-if="row.activeStatus==0 " size="mini" type="danger" @click="handleDelete(row,$index)">
+          <!-- <el-button v-if="row.activeStatus==-1 " size="mini" type="danger" @click="handleDelete(row,$index)">
+            移除
+          </el-button> -->
+          <el-button v-if="row.activeStatus!=1" size="mini" type="success" @click="handleModifyStatus(row,1)">
             激活
           </el-button>
         </template>
@@ -137,7 +137,7 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="temp.phone" />
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item v-if="dialogStatus!=='create'" label="状态">
           <el-select v-model="temp.activeStatus" placeholder="请选择" clearable class="filter-item" style="width: 130px">
             <el-option v-for="item in userActiveStatusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
           </el-select>
@@ -183,8 +183,8 @@
 </template>
 
 <script>
-import { fetchPv, createArticle, updateArticle } from '@/api/article'
-import { usePageList } from '@/api/user'
+import { fetchPv } from '@/api/article'
+import { usePageList, updateUser, register } from '@/api/user'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -253,14 +253,9 @@ export default {
         password: undefined,
         realName: undefined,
         phone: undefined,
+        avatarUrl: 'http://thirdwx.qlogo.cn/mmopen/vi_32/E7XLbDS0gRJibYGpzxcEwXibyTwQAAHX9Koia7oln1821c8Djkibtpf6O20J3nacpnb0pg1UmtpdfDznHYBZvL78kw/132',
         activeStatus: '激活',
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        type: '',
-        status: 'published'
+        id: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -316,11 +311,13 @@ export default {
       this.getList()
     },
     handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作Success',
-        type: 'success'
+      row.activeStatus = status
+      updateUser(row).then(() => {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
       })
-      row.status = status
     },
     sortChange(data) {
       const { prop, order } = data
@@ -359,14 +356,12 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          createArticle(this.temp).then(() => {
+          register(this.temp).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
-              message: 'Created Successfully',
+              message: '添加用户成功',
               type: 'success',
               duration: 2000
             })
@@ -377,7 +372,6 @@ export default {
     handleUpdate(row) {
       this.inputDisable = true
       this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -388,8 +382,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
+          updateUser(tempData).then(() => {
             const index = this.list.findIndex(v => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
