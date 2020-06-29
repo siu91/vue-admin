@@ -41,7 +41,7 @@ const constantRoutes = [
         path: 'dashboard',
         component: 'views/dashboard/index',
         name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+        meta: { title: '首页', icon: 'dashboard', affix: true }
       }
     ]
   },
@@ -510,7 +510,7 @@ const asyncRoutes = [
     ]
   },
 
-  {
+  /*   {
     path: 'external-link',
     component: 'layout/Layout',
     children: [
@@ -519,7 +519,7 @@ const asyncRoutes = [
         meta: { title: 'External Link', icon: 'link' }
       }
     ]
-  },
+  }, */
 
   { path: '*', redirect: '/404', hidden: true }
 ]

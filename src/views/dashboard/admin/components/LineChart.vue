@@ -90,10 +90,10 @@ export default {
           }
         },
         legend: {
-          data: ['expected', 'actual']
+          data: ['bug', 'commit']
         },
         series: [{
-          name: 'expected', itemStyle: {
+          name: 'bug', itemStyle: {
             normal: {
               color: '#FF005A',
               lineStyle: {
@@ -109,7 +109,7 @@ export default {
           animationEasing: 'cubicInOut'
         },
         {
-          name: 'actual',
+          name: 'commit',
           smooth: true,
           type: 'line',
           itemStyle: {
