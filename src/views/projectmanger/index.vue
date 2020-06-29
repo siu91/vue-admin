@@ -1,22 +1,28 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.terms.userName" placeholder="用户名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <!--  <el-input v-model="listQuery.terms.userName" placeholder="用户名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" /> -->
       <!-- <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
       </el-select -->
-      <el-select v-model="listQuery.terms.userType" placeholder="角色" clearable class="filter-item" style="width: 130px">
-        <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+      <el-select v-model="projectConnect.ztProductId" placeholder="禅道产品" clearable class="filter-item" style="width: 230px" @change="selectProduct">
+        <el-option v-for="item in ztProductList" :key="item.id" :label="item.name" :value="item.id" />
+      </el-select>
+      <el-select v-model="projectConnect.ztProjectId" placeholder="禅道项目" clearable class="filter-item" style="width: 230px">
+        <el-option v-for="item in ztProductProjectList" :key="item.id" :label="item.name" :value="item.id" />
+      </el-select>
+      <el-select v-model="projectConnect.glProjectId" placeholder="Gitlab项目" clearable class="filter-item" style="width: 200px">
+        <el-option v-for="item in gitlabProjectList" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
       <!-- <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select> -->
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        查询
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-edit" @click="handleConnenctProject">
+        关联
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+      <!--  <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
         添加
-      </el-button>
+      </el-button> -->
       <!--  <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         导出
       </el-button> -->
@@ -183,8 +189,11 @@
 </template>
 
 <script>
-import { fetchPv, createArticle, updateArticle } from '@/api/article'
+import { createArticle, updateArticle } from '@/api/article'
 import { usePageList } from '@/api/user'
+import { ztProductList, ztProductProjectList } from '@/api/zentao'
+import { gitlabProjectList } from '@/api/gitlab'
+import { connectProject } from '@/api/hsync'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -229,6 +238,17 @@ export default {
   },
   data() {
     return {
+      ztProductList: [
+      ],
+      ztProductProjectList: [
+      ],
+      gitlabProjectList: [
+      ],
+      projectConnect: {
+        ztProductId: '',
+        ztProjectId: '',
+        glProjectId: ''
+      },
       tableKey: 0,
       list: null,
       total: 0,
@@ -285,15 +305,63 @@ export default {
   computed() {
     this.isdisabledInput()
   },
+  watch() {
+    console.log('watch')
+  },
   created() {
+    console.log('create')
     this.getList()
+    // 加载禅道产品下拉列表
+    this.getZentaoProductList()
+    // 加载gitlab项目下拉列表
+    this.getGitlabProjectList()
   },
   methods: {
+    selectProduct(val) {
+      console.log('select val:' + val)
+      console.log('select product:' + this.projectConnect.ztProductId)
+      this.projectConnect.ztProjectId = ''
+      this.ztProductProjectList = []
+      this.getZentaoProductProjectList()
+    //  console.log('select' + e.target.selectedIndex) // 选择项的index索引
+    // console.log(e.target.value) // 选择项的value
+    },
     isdisabledInput() {
       if (this.dialogStatus === 'update') {
         return 'disabled'
       }
       return ''
+    },
+    getGitlabProjectList() {
+      gitlabProjectList().then(response => {
+        this.gitlabProjectList = response.data.items
+
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      })
+    },
+    getZentaoProductList() {
+      ztProductList().then(response => {
+        this.ztProductList = response.data.items
+
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      })
+    },
+    getZentaoProductProjectList() {
+      console.log('加载产品的项目下拉列表：' + this.projectConnect.ztProductId)
+      ztProductProjectList(this.projectConnect.ztProductId).then(response => {
+        this.ztProductProjectList = response.data.items
+
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      })
     },
     getList() {
       this.listLoading = true
@@ -314,6 +382,18 @@ export default {
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
+    },
+    handleConnenctProject() {
+      // const { limit, page, terms } = this.listQuery
+      // { limit: limit, page: page, terms: terms }
+      const q = Object.assign({}, this.projectConnect)
+      connectProject(q).then(response => {
+        this.$message({
+          message: '项目关联成功',
+          type: 'success',
+          duration: 5 * 1000
+        })
+      })
     },
     handleModifyStatus(row, status) {
       this.$message({
@@ -411,26 +491,6 @@ export default {
         duration: 2000
       })
       this.list.splice(index, 1)
-    },
-    handleFetchPv(pv) {
-      fetchPv(pv).then(response => {
-        this.pvData = response.data.pvData
-        this.dialogPvVisible = true
-      })
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
-      })
     },
     formatJson(filterVal) {
       return this.list.map(v => filterVal.map(j => {
