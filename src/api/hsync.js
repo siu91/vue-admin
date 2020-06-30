@@ -10,8 +10,8 @@ export function connectProject(data) {
 
 export function syncList(data) {
   return request({
-    url: '/v1/syncs',
-    method: 'get',
+    url: '/v1/syncs/page',
+    method: 'post',
     data
   })
 }

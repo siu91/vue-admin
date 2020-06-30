@@ -45,9 +45,9 @@
           <span>{{ row.userName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="禅道/Gitlab用户名" width="150px" align="center">
+      <el-table-column label="内部账号" width="150px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.realName }}</span>
+          <span>{{ row.innerName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="类型" width="110px" align="center">
@@ -71,11 +71,11 @@
           <el-tag>{{ row.userName | typeFilter }}</el-tag>
         </template>
       </el-table-column> -->
-      <el-table-column label="电话" width="110px" align="center">
+      <!-- <el-table-column label="电话" width="110px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.phone }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <!--  <el-table-column v-if="showReviewer" label="Reviewer" width="110px" align="center">
         <template slot-scope="{row}">
           <span style="color:red;">{{ row.reviewer }}</span>
@@ -236,6 +236,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
+        sort: ['id'],
         terms: {
           userName: undefined,
           userType: undefined
@@ -244,7 +245,6 @@ export default {
       importanceOptions: [1, 2, 3],
       calendarTypeOptions,
       userActiveStatusOptions,
-      sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
       temp: {
@@ -327,9 +327,9 @@ export default {
     },
     sortByID(order) {
       if (order === 'ascending') {
-        this.listQuery.sort = '+id'
+        this.listQuery.sort = ['id']
       } else {
-        this.listQuery.sort = '-id'
+        this.listQuery.sort = ['-id']
       }
       this.handleFilter()
     },

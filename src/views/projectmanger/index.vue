@@ -7,7 +7,7 @@
       <el-select v-model="projectConnect.ztProjectId" placeholder="禅道项目" clearable class="filter-item" style="width: 230px">
         <el-option v-for="item in ztProductProjectList" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
-      <el-select v-model="projectConnect.glProjectId" placeholder="Gitlab项目" clearable class="filter-item" style="width: 200px">
+      <el-select v-model="projectConnect.glProjectId" placeholder="Gitlab项目" clearable class="filter-item" style="width: 200px" @click="getGitlabProjectList">
         <el-option v-for="item in gitlabProjectList" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-edit" @click="handleConnenctProject">
@@ -30,24 +30,19 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="关联信息" width="250px" align="center">
+      <el-table-column label="禅道产品" width="180px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.description }}</span>
+          <span><a :href="'http://192.168.5.137/zentao/product-view-'+row.ztProductId+'.html'" target="_blank"> {{ row.ztProductName }} </a></span>
         </template>
       </el-table-column>
-      <el-table-column label="禅道产品ID" width="100px" align="center">
+      <el-table-column label="禅道项目" width="180px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.ztProductId }}</span>
+          <span><a :href="'http://192.168.5.137/zentao/project-task-'+row.ztProjectId+'.html'" target="_blank"> {{ row.ztProjectName }} </a></span>
         </template>
       </el-table-column>
-      <el-table-column label="禅道项目ID" width="100px" align="center">
+      <el-table-column label="Gitlab项目" width="180px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.ztProjectId }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Gitlab项目ID" width="150px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.glProjectId }}</span>
+          <span><a :href="'http://192.168.1.23/'+row.glProjectName" target="_blank"> {{ row.glProjectName }} </a></span>
         </template>
       </el-table-column>
       <el-table-column label="是否同步" width="110px" align="center">
@@ -151,6 +146,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
+        sort: ['id'],
         terms: {
           userName: undefined,
           userType: undefined
@@ -159,7 +155,6 @@ export default {
       importanceOptions: [1, 2, 3],
       calendarTypeOptions,
       userActiveStatusOptions,
-      sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
       temp: {
@@ -309,9 +304,9 @@ export default {
     },
     sortByID(order) {
       if (order === 'ascending') {
-        this.listQuery.sort = '+id'
+        this.listQuery.sort = ['id']
       } else {
-        this.listQuery.sort = '-id'
+        this.listQuery.sort = ['-id']
       }
       this.handleFilter()
     },
@@ -410,3 +405,4 @@ export default {
   }
 }
 </script>
+
