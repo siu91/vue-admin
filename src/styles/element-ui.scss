@@ -1,5 +1,10 @@
 // cover some element-ui styles
 
+// 全局样式中添加，这样可以解决所有的页面中表格对不齐的问题
+.el-table th.gutter{
+  display: table-cell !important;
+  }
+
 .el-breadcrumb__inner,
 .el-breadcrumb__inner a {
   font-weight: 400 !important;
