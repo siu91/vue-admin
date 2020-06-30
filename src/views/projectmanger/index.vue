@@ -7,7 +7,7 @@
       <el-select v-model="projectConnect.ztProjectId" placeholder="禅道项目" clearable class="filter-item" style="width: 230px">
         <el-option v-for="item in ztProductProjectList" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
-      <el-select v-model="projectConnect.glProjectId" placeholder="Gitlab项目" clearable class="filter-item" style="width: 200px" @click="getGitlabProjectList">
+      <el-select v-model="projectConnect.glProjectId" placeholder="Gitlab项目" clearable class="filter-item" style="width: 200px" @focus="getGitlabProjectList">
         <el-option v-for="item in gitlabProjectList" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-edit" @click="handleConnenctProject">
@@ -225,7 +225,7 @@ export default {
     getGitlabProjectList() {
       gitlabProjectList().then(response => {
         this.gitlabProjectList = response.data.items
-
+        console.log('加载gitlab 项目下拉列表')
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
