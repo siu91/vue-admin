@@ -188,15 +188,30 @@ export const asyncRoutes = [
           title: '角色管理'
           // if do not set roles, means: this page does not require permission
         }
+      }
+    ]
+  },
+  {
+    path: '/webhook/index',
+    component: Layout,
+    name: 'Webhook',
+    meta: {
+      title: 'WebHook',
+      icon: 'link',
+      roles: ['admin'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/webhook/index'),
+        name: 'GitlabEvent',
+        meta: { title: 'GitlabEvent', icon: 'clipboard' }
       },
       {
-        path: 'role',
-        component: () => import('@/views/permission/role'),
-        name: 'RolePermission',
-        meta: {
-          title: 'Role Permission',
-          roles: ['admin']
-        }
+        path: 'accesstoken',
+        component: () => import('@/views/webhook/accesstoken'),
+        name: 'AccessToken',
+        meta: { title: 'AccessToken', icon: 'clipboard' }
       }
     ]
   },
@@ -205,6 +220,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/permission/page',
     alwaysShow: true, // will always show the root menu
+    hidden: true,
     name: 'Permission',
     meta: {
       title: 'Permission',
@@ -442,6 +458,7 @@ export const asyncRoutes = [
   {
     path: '/clipboard',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'index',

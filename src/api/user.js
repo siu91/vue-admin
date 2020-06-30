@@ -53,3 +53,10 @@ export function register(data) {
     data
   })
 }
+
+export function accessToken() {
+  return request({
+    url: '/v1/api/accesstoken',
+    method: 'get'
+  })
+}
