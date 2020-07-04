@@ -4,14 +4,14 @@
       <el-select v-model="projectConnect.ztProductId" placeholder="禅道产品" clearable class="filter-item" style="width: 230px" @change="selectProduct">
         <el-option v-for="item in ztProductList" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
-      <!-- <el-select v-model="projectConnect.ztProjectId" placeholder="禅道项目" clearable class="filter-item" style="width: 230px">
+      <el-select v-model="projectConnect.ztProjectId" placeholder="禅道项目" clearable class="filter-item" style="width: 230px">
         <el-option v-for="item in ztProductProjectList" :key="item.id" :label="item.name" :value="item.id" />
-      </el-select> -->
+      </el-select>
       <el-select v-model="projectConnect.glProjectId" placeholder="Gitlab Project" clearable class="filter-item" style="width: 200px" @focus="getGitlabProjectList">
         <el-option v-for="item in gitlabProjectList" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-edit" @click="handleConnenctProduct">
-        关联
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-edit" @click="handleFilter">
+        查询
       </el-button>
     </div>
 
@@ -30,6 +30,11 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="禅道项目" width="180px" align="center">
+        <template slot-scope="{row}">
+          <span><a :href="'http://192.168.5.137/zentao/project-task-'+row.ztProjectId+'.html'" target="_blank"> {{ row.ztProjectName }} </a></span>
+        </template>
+      </el-table-column>
       <el-table-column label="禅道产品" width="180px" align="center">
         <template slot-scope="{row}">
           <span><a :href="'http://192.168.5.137/zentao/product-view-'+row.ztProductId+'.html'" target="_blank"> {{ row.ztProductName }} </a></span>
@@ -45,11 +50,11 @@
           <span>{{ row.sync == 1 ? '是':'否' }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="同步时间" width="230px" align="center">
+      <el-table-column label="同步时间" width="230px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.syncTime }}</span>
         </template>
-      </el-table-column> -->
+      </el-table-column>
       <el-table-column label="创建时间" width="230px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.createTime }}</span>
@@ -78,7 +83,7 @@
 import { createArticle, updateArticle } from '@/api/article'
 import { ztProductList, ztProductProjectList } from '@/api/zentao'
 import { gitlabProjectList } from '@/api/gitlab'
-import { connectProduct, syncProudctList, deleteProductSync, updateProductSync } from '@/api/hsync'
+import { syncProjectList, deleteProjectSync, updateProjectSync } from '@/api/hsync'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -202,6 +207,10 @@ export default {
     this.getGitlabProjectList()
   },
   methods: {
+    handleFilter() {
+      this.listQuery.page = 1
+      this.getList()
+    },
     selectProduct(val) {
       console.log('select val:' + val)
       console.log('select product:' + this.projectConnect.ztProductId)
@@ -253,7 +262,7 @@ export default {
       // const { limit, page, terms } = this.listQuery
       // { limit: limit, page: page, terms: terms }
       const q = Object.assign({}, this.listQuery)
-      syncProudctList(q).then(response => {
+      syncProjectList(q).then(response => {
         this.list = response.data.items
         this.total = response.data.total
         console.log('ss:' + this.total)
@@ -264,26 +273,9 @@ export default {
         }, 1.5 * 1000)
       })
     },
-    handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
-    },
-    handleConnenctProduct() {
-      // const { limit, page, terms } = this.listQuery
-      // { limit: limit, page: page, terms: terms }
-      const q = Object.assign({}, this.projectConnect)
-      connectProduct(q).then(response => {
-        this.getList()
-        this.$message({
-          message: '禅道产品与Gitlab Project关联成功',
-          type: 'success',
-          duration: 5 * 1000
-        })
-      })
-    },
     handleModifySync(row, status) {
       row.sync = status
-      updateProductSync(row).then(() => {
+      updateProjectSync(row).then(() => {
         this.$message({
           message: '操作成功',
           type: 'success'
@@ -374,7 +366,7 @@ export default {
     },
     handleDelete(row, index) {
       console.log('删除同步：' + row.id)
-      deleteProductSync(row.id).then(() => {
+      deleteProjectSync(row.id).then(() => {
         this.$notify({
           title: 'Success',
           message: '删除成功',

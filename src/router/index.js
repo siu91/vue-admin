@@ -125,7 +125,7 @@ export const asyncRoutes = [
     alwaysShow: true, // will always show the root menu
     name: 'ProjectManager',
     meta: {
-      title: '项目管理',
+      title: '同步管理',
       icon: 'project',
       roles: ['admin'] // you can set roles in root nav
     },
@@ -135,7 +135,16 @@ export const asyncRoutes = [
         component: () => import('@/views/projectmanger/index'),
         name: 'ProjectMnagerIndex',
         meta: {
-          title: '项目关联',
+          title: '产品',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'projects',
+        component: () => import('@/views/projectmanger/projects'),
+        name: 'ProjectMnagerProjects',
+        meta: {
+          title: '计划',
           roles: ['admin'] // or you can only set roles in sub nav
         }
       },
@@ -144,7 +153,7 @@ export const asyncRoutes = [
         component: () => import('@/views/projectmanger/tasks'),
         name: 'ProjectTasks',
         meta: {
-          title: '项目任务'
+          title: '任务'
           // if do not set roles, means: this page does not require permission
         }
       },
@@ -153,7 +162,7 @@ export const asyncRoutes = [
         component: () => import('@/views/projectmanger/bugs'),
         name: 'ProjectBugs',
         meta: {
-          title: '项目Bug',
+          title: 'Bug',
           roles: ['admin']
         }
       }

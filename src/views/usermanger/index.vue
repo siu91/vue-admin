@@ -52,7 +52,7 @@
       </el-table-column>
       <el-table-column label="类型" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.userType == 1 ? '管理员':'普通用户' }}</span>
+          <span>{{ row.userType == 2 ? '管理员': row.userType == 1 ?'高级用户':'普通用户' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="状态" class-name="status-col" width="100">
@@ -128,10 +128,10 @@
         <el-form-item label="用户名" prop="userName">
           <el-input v-model="temp.userName" :disabled="inputDisable" />
         </el-form-item>
-        <el-form-item label="密码" prop="password">
+        <el-form-item v-if="dialogStatus==='create'" label="密码" prop="password">
           <el-input v-model="temp.password" type="password" :disabled="inputDisable" />
         </el-form-item>
-        <el-form-item label="内部系统用户名" prop="realName">
+        <el-form-item label="真实姓名" prop="realName">
           <el-input v-model="temp.realName" />
         </el-form-item>
         <el-form-item label="手机号" prop="phone">
@@ -190,7 +190,8 @@ import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 const calendarTypeOptions = [
-  { key: '1', display_name: '管理员' },
+  { key: '2', display_name: '管理员' },
+  { key: '1', display_name: '高级用户' },
   { key: '0', display_name: '普通用户' }
 ]
 
